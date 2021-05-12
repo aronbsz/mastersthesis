@@ -1,0 +1,165 @@
+\chapter{Evaluation}
+
+\section{Theoretical evaluation}
+
+The framework presented in this thesis has both advantages and disadvantages in design and implementation. The modular setup shown in Fig. \ref{fig:abstractoverview}, while providing easy extensibility, does require knowledge of the algorithms implemented therein. In contrary to LearnLib, where (from my experience) data structures are easily extended and onboarded to the learning, algorithm implementations are difficult to provide new solutions to, my framework allows extensibility on every front of it, with a steeper learning curve even with new input/output onboarding. This makes the framework optimal from an engineering perspective, since it allows the integration of other tools. For example, through the implemented EMF formalism, both the Gamma Statechart Composition framework\cite{DBLP:conf/icse/MolnarGVMV18} and the Theta framework\cite{theta-fmcad2017} can be integrated in the future.
+
+The framework, when implementing similar formalisms does require some redundancy, especially with the \emph{Learnable-LernableAdapter-Teacher} trio of implementation needed with new formalisms. The advantage of this sometimes redundant approach is the overall elimination of typecasting and uncertain genericity, allowing for exact application of methods and classes after bounding the generic parameters required, improving runtime, the compliance with object-oriented paradigms, and understandibility of an implementation without context of its abstrations. The \emph{Learnable} and \emph{Hypothesis} endpoints of input and output formalisms being interfaces provide flexibility by leveraging the multiple-inheritance (implementation) property of interfaces. This is used for example in the TTT implementation in order to extend upon classes of LearnLib, while still implementing my frameworks abstractions.
+
+\subsection{Evaluation of DHC}
+
+The Direct Hypothesis Construction algorithm, as theorized and proved in \cite{Steffen2011} and \cite{10.1007/978-3-642-34781-8_19}, terminates after at most $n^3mk+n^2k^2$ membership, and $n$ equivalence queries, where $n=|S|$, $k=|\Sigma|$ and $m$ is the longest counterexample. The runtime complexity of these queries are difficult to evaluate, since they highly depend on implementation and context. Reaching the system under learning in the current implementation of input formalisms (String sequece or Mealy machine) takes no overhead, since the system behavior is stored in-memory. This might not be the case in other implementations, where the SUL might be reached through network communication or other methods with non-negligible overhead. In terms of membership queries, the current implementations differ. 
+
+String sequences (\emph{StringSequenceLearnable}s) are stored in an input-output \emph{HashMap}, which allows $O(1)$ access assuming the values are evenly distributed in the buckets used by the hashing, worst-case scenario being $O(k)$. While access is fast, this method suffers in terms of space complexity, storing a numer of elements identical to $\mathcal{P}(\Sigma)\setminus\emptyset$, or in text, the powerset of $\Sigma$ without the empty set, resulting in a space complexity of $O(2^k)$.
+
+The MealyMachine implementation (the \emph{MealyLearnable} class) provides a more reasonable $O(k)$ space complexity, but it struggles with runtime issues. This transition-driven implementation of Mealy machines, as discussed in Chapter \ref{contrib}, provides ease of access to the automaton, resulting in a straightforward implementation of membership queries. However, not storing the automata in a graph-like format reduces efficiency. This results in a worst-case scenario of $O(kt)$, where $t$ is the number of transitions of the automaton.
+
+From the perspective of equivalence queries, the two implemented input formalisms both provide the same efficiency. Since the implementation of this query is in the \emph{StringSequenceAdapter} class, both \emph{MealyLearnable} and \emph{StringSequenceLearnable} are queried using this implementation, which can be seen in Listing \ref{li:eqbruteforce}. This implementation is a brute-force way of proving equivalence of the hypothesis and the system under learning, operating by taking every permutation of every element in $\mathcal{P}(\Sigma)\setminus\emptyset$ and comparing outputs using membership queries for each of them. In order to mitigate some of this inefficiency, the implementation uses google guavas \emph{Sets.powerSet()} method, providing $O(k)$ space complexity as opposed to a brute-force $O(2^k)$ implementation. For each member of $\mathcal{P}(\Sigma)\setminus\emptyset$, the permutations are calculated using the \emph{Collections2.permutations()} method of guava, implementing the Johnson–Trotter algorithm. This results in a $O(2^kk!)$ number of membership queries considering the "worst case" of finding no counterexamples.
+
+In summary, the best-case scenario of the current DHC implementation has an $O(n^3mk^2+n^2k^3+2^kk!k)$ runtime complexity, and the worst case is $O(n^3mk^2t+n^2k^3t+2^kk!kt)$ depending on the variables presented above.
+
+\subsection{Evaluation of TTT}
+
+The TTT algorithm, as presented in \cite{10.1007/978-3-319-11164-3_26}, requires $O(n)$ equivalence queries and $O(kn^2+n\log m)$ membership queries, each of which takes $O(n+m)$ time, where $n=|S|$, $k=|\Sigma|$ and $m$ is the longest counterexample. This is a very pessimistic estimate caused by the edge-case of a discriminator tree having a height of $n$. The time complexity of the equivalence query implementation seen in \ref{li:eqbruteforce} still holds as $O(2^kk!)$, but is lengthened by the complexity of conversion between formalisms, being $O(nt)$ in the worst case, where $t$ is the number of transitions of the current hypothesized automaton. Altogether, the worst case scenario has a $O((kn^2+n\log m)(n+m) + 2^kk!nt)$ time complexity. TTT also provides an efficient $\Theta(kn)$ space complexity\cite{10.1007/978-3-319-11164-3_26}.
+
+
+\section{Experimental evaluation}
+
+The experimental evaluation of the implemented algorithms were performed using variations of the automaton seen in Fig. \ref{fig:dfaexamplemealyver}.a. This decision is based on the simplicity of extending the automaton accepting inputs containing $4i+3a$ to inputs containing $ni+(n-1)a$, where $n\in \mathbb{N}$ is the size of the loop in the automaton and $i \in \mathbb{N}$. An example of this can be seen in Fig. \ref{fig:5ia}, where $n=5$. This solution is easily scalable and straightforward to implement even for large $n$-s.
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[shorten >=1pt,node distance=3.5cm,on grid,auto] 
+	\node[state,initial] (q_0)   {$q_0$}; 
+	\node[state] (q_1) [right=of q_0] {$q_1$}; 
+	\node[state] (q_2) [below=of q_0] {$q_2$}; 
+	\node[state](q_3) [right=of q_2] {$q_3$};
+	\node[state](q_4) [above right= 2.4cm of q_3] {$q_4$};
+	\path[->] 
+	(q_0) edge[]  node {a/$\top$} (q_1)
+	edge [loop below] node {b/$\top$} ()
+	(q_1) edge[]  node[pos=0.62]  {a/$\top$} (q_2)
+	edge [loop below] node {b/$\top$} ()
+	(q_2) edge[]  node [swap] {a/$\top$} (q_3) 
+	edge [loop above] node {b/$\top$} ()
+	(q_3) edge  node[pos=0.62] [swap] {a/$\bot$} (q_4)
+	edge [loop above] node {b/$\top$} () 
+	(q_4) edge[bend right=70]  node[pos=0.62] [swap] {a/$\top$} (q_0)
+	edge [loop right] node {b/$\bot$} ();
+	
+	\end{tikzpicture}
+	\caption{Example of an automaton accepting inputs containing $5i+4a$.}
+	\label{fig:5ia}
+\end{figure}
+
+As seen in the theoretical evaluation, the size of the state space is not the only possible bottleneck, both algorithms (and the equivalence query implementation especially) slow with the size of the input alphabet. A simple solution of testing growing input alphabets using the Mealy machine seen in Fig. \ref{fig:dfaexamplemealyver}.a, is to add characters (transitions) without adding behavior. This does not remove the minimal property of an automaton, contrary to adding states without changing behavior, thus increasing runtime. An example of the described input alphabet extension can be seen in Figure \ref{fig:abcextended}.
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[shorten >=1pt,node distance=3.5cm,on grid,auto] 
+	\node[state,initial] (q_0)   {$q_0$}; 
+	\node[state] (q_1) [right=of q_0] {$q_1$}; 
+	\node[state] (q_2) [below=of q_0] {$q_2$}; 
+	\node[state](q_3) [right=of q_2] {$q_3$};
+	\path[->] 
+	(q_0) edge[]  node {a/$\top$} (q_1)
+	edge [loop below] node {b/$\top$} ()
+	edge [loop above] node {c/$\bot$} () 
+	(q_1) edge[]  node[pos=0.62]  {a/$\top$} (q_2)
+	edge [loop below] node {b/$\top$} ()
+	edge [loop above] node {c/$\bot$} () 
+	(q_2) edge[]  node [swap] {a/$\top$} (q_3) 
+	edge [loop above] node {b/$\top$} ()
+	edge [loop below] node {c/$\bot$} () 
+	(q_3) edge  node[pos=0.62] [swap] {a/$\bot$} (q_0)
+	edge [loop above] node {b/$\bot$} () 
+	edge [loop below] node {c/$\bot$} () ;
+	\end{tikzpicture}
+	\caption{Example of the automaton seen in Fig. \ref{fig:dfaexamplemealyver}.a with an extended input alphabet $\Sigma=\{a, b, c\}$.}
+	\label{fig:abcextended}
+\end{figure}
+
+Table \ref{tab:evalspecs} details the specifications on which the measurements were ran.
+
+\renewcommand{\tabularxcolumn}[1]{m{#1}}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\begin{table}[H]
+	
+	\begin{tabularx}{\columnwidth}{YYYYY}
+		\hline
+		\textbf{Operating system} & \textbf{Processor}  & \textbf{Java version} & \textbf{Eclipse version} & \textbf{Heap size} \\ \hline
+		Windows 10 Pro & Intel Core i7-8700 & OpenJDK 1.8 & Eclipse Modeling Tools 4.12.0 & Xms1024m, Xmx2048m
+		\\ \hline
+	\end{tabularx}
+	\caption{Overview of the algorithm implementations in the framework.}
+	\label{tab:evalspecs}
+\end{table}
+
+After running the experiments, an obvious bottleneck could be found. The current brute-force equivalence query implementation is inefficient, as the theoretical evaluation suggested. Figure \ref{fig:stateruntime} shows the inefficiency observed when extending the states and the behavior of the learned automaton. Similarly, the TTT implementation was slowed to the point of having the same runtime as the DHC algorithm, as illustrated by Fig. \ref{fig:stateruntimettt}. The same can be said about the extenstion of the input alphabet, Fig. \ref{fig:inputruntime} and Fig. \ref{fig:inputruntimettt} show the DHC and the TTT algorithms respectively being bottlenecked to the point of indifferentiability. This is caused by both the inefficient equivalence query and the small size of the automata being learned. 
+
+It is important to note, that these inefficiencies were not caused by the learning algorithms, but by the equivalence algorithm. In order to remove the bottleneck and compare the actual learning algorithm runtimes, an optimized, near linear-time equivalence oracle from \emph{LearnLib} was onboarded to the framework for both the DHC and TTT algorithms to use.
+
+Figure \ref{fig:stateruntimeopt} and Figure \ref{fig:stateruntimeoptttt} show the runtime of the DHC and the TTT algorithms for growing state spaces. The difference in efficiency is obvious, while DHC learned a 344 state automaton for two and a half minutes, TTT learned the automaton accepting $1904i-1903a$ (which contains 1904 states) in the same time. Similar results can be seen in Fig. \ref{fig:inputruntimeopt} and Fig. \ref{fig:inputruntimeoptttt}, which illustrate, that DHC depends on the size of the input alphabet vastly more, than TTT does.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/stateruntime}
+	\caption{The bottleneck the brute-force equivalence query implementation causes when increasing the state space while running DHC.}
+	\label{fig:stateruntime}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/stateruntimettt}
+	\caption{The bottleneck the brute-force equivalence query implementation causes when increasing the state space while running TTT.}
+	\label{fig:stateruntimettt}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/stateruntimeopt}
+	\caption{Runtime of the DHC algorithm with increasing state space using the optimized equivalence query from \emph{LearnLib}.}
+	\label{fig:stateruntimeopt}
+\end{figure}
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/stateruntimeoptttt}
+	\caption{Runtime of the TTT algorithm with increasing state space using the optimized equivalence query from \emph{LearnLib}.}
+	\label{fig:stateruntimeoptttt}
+\end{figure}
+
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/inputruntime}
+	\caption{The bottleneck the brute-force equivalence query implementation causes when increasing the input alphabet while running DHC.}
+	\label{fig:inputruntime}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/inputruntimettt}
+	\caption{The bottleneck the brute-force equivalence query implementation causes when increasing the input alphabet while running TTT.}
+	\label{fig:inputruntimettt}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/inputruntimeopt}
+	\caption{Runtime of the DHC algorithm with increasing input alphabet using the optimized equivalence query from \emph{LearnLib}.}
+	\label{fig:inputruntimeopt}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/inputruntimeoptttt}
+	\caption{Runtime of the TTT algorithm with increasing input alphabet using the optimized equivalence query from \emph{LearnLib}.}
+	\label{fig:inputruntimeoptttt}
+\end{figure}
+
+In summary, for smaller system components, the DHC algorithm is straightforward to use, formalisms are also simple to onboard to it. However, for most use cases in system design, the efficiency of the TTT algorithm overweigh the implementation complexity of it, making the TTT the better solution for most practical problems.
+

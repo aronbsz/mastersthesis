@@ -1,0 +1,43 @@
+\select@language {magyar} \contentsline {chapter}{Kivonat}{i}{chapter*.2}% 
+\select@language {english} \contentsline {chapter}{Abstract}{ii}{chapter*.3}% 
+\select@language {english} \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}% 
+\select@language {english} \contentsline {section}{\numberline {1.1}Context}{1}{section.1.1}% 
+\select@language {english} \contentsline {section}{\numberline {1.2}Problem Statement}{1}{section.1.2}% 
+\select@language {english} \contentsline {section}{\numberline {1.3}Objective}{1}{section.1.3}% 
+\select@language {english} \contentsline {section}{\numberline {1.4}Contribution}{1}{section.1.4}% 
+\select@language {english} \contentsline {section}{\numberline {1.5}Related work}{2}{section.1.5}% 
+\select@language {english} \contentsline {section}{\numberline {1.6}Added value}{2}{section.1.6}% 
+\select@language {english} \contentsline {section}{\numberline {1.7}Outline}{2}{section.1.7}% 
+\select@language {english} \contentsline {chapter}{\numberline {2}Background}{3}{chapter.2}% 
+\select@language {english} \contentsline {section}{\numberline {2.1}Basics of automaton theory}{3}{section.2.1}% 
+\select@language {english} \contentsline {subsection}{\numberline {2.1.1}Fundamentals of formal language theory}{3}{subsection.2.1.1}% 
+\select@language {english} \contentsline {subsection}{\numberline {2.1.2}Properties of deterministic automata}{4}{subsection.2.1.2}% 
+\select@language {english} \contentsline {subsection}{\numberline {2.1.3}Relations of formal languages and automata}{6}{subsection.2.1.3}% 
+\select@language {english} \contentsline {subsection}{\numberline {2.1.4}Minimization of automata}{9}{subsection.2.1.4}% 
+\select@language {english} \contentsline {section}{\numberline {2.2}Automaton learning}{10}{section.2.2}% 
+\select@language {english} \contentsline {paragraph}{Automaton learning}{10}{section*.8}% 
+\select@language {english} \contentsline {paragraph}{Passive automaton learning}{11}{section*.9}% 
+\select@language {english} \contentsline {paragraph}{Active automaton learning}{11}{section*.10}% 
+\select@language {english} \contentsline {paragraph}{Membership query}{11}{section*.11}% 
+\select@language {english} \contentsline {paragraph}{Equivalence query}{11}{section*.12}% 
+\select@language {english} \contentsline {subsection}{\numberline {2.2.1}Direct Hypothesis Construction\cite {10.1007/978-3-642-34781-8_19}}{14}{subsection.2.2.1}% 
+\select@language {english} \contentsline {subsection}{\numberline {2.2.2}The TTT algorithm\cite {10.1007/978-3-319-11164-3_26}}{15}{subsection.2.2.2}% 
+\select@language {english} \contentsline {chapter}{\numberline {3}Contribution}{18}{chapter.3}% 
+\select@language {english} \contentsline {section}{\numberline {3.1}Automaton learning framework}{18}{section.3.1}% 
+\select@language {english} \contentsline {subsection}{\numberline {3.1.1}Tooling}{18}{subsection.3.1.1}% 
+\select@language {english} \contentsline {subsection}{\numberline {3.1.2}High-level overview}{19}{subsection.3.1.2}% 
+\select@language {english} \contentsline {subsection}{\numberline {3.1.3}Detailed overview of abstractions}{20}{subsection.3.1.3}% 
+\select@language {english} \contentsline {section}{\numberline {3.2}Implemented learning algorithms}{21}{section.3.2}% 
+\select@language {english} \contentsline {subsection}{\numberline {3.2.1}Direct Hypothesis Construction}{23}{subsection.3.2.1}% 
+\select@language {english} \contentsline {subsection}{\numberline {3.2.2}TTT}{26}{subsection.3.2.2}% 
+\select@language {english} \contentsline {subsection}{\numberline {3.2.3}Case studies}{27}{subsection.3.2.3}% 
+\select@language {english} \contentsline {chapter}{\numberline {4}Evaluation}{28}{chapter.4}% 
+\select@language {english} \contentsline {section}{\numberline {4.1}Theoretical evaluation}{28}{section.4.1}% 
+\select@language {english} \contentsline {subsection}{\numberline {4.1.1}Evaluation of DHC}{28}{subsection.4.1.1}% 
+\select@language {english} \contentsline {subsection}{\numberline {4.1.2}Evaluation of TTT}{29}{subsection.4.1.2}% 
+\select@language {english} \contentsline {section}{\numberline {4.2}Experimental evaluation}{29}{section.4.2}% 
+\select@language {english} \contentsline {chapter}{\numberline {5}Conclusions}{36}{chapter.5}% 
+\select@language {english} \contentsline {section}{\numberline {5.1}Contributions}{36}{section.5.1}% 
+\select@language {english} \contentsline {section}{\numberline {5.2}Future work}{37}{section.5.2}% 
+\select@language {english} \contentsline {chapter}{Bibliography}{38}{section.5.2}% 
+\select@language {english} \contentsline {chapter}{Appendix}{40}{appendix*.35}% 
