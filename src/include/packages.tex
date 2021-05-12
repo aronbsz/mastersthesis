@@ -1,15 +1,6 @@
 % thanks to http://tex.stackexchange.com/a/47579/71109
-\usepackage{tikz}
-\usetikzlibrary{automata,positioning}
-\usepackage{marvosym}
-\usepackage{float}
 \usepackage{ifxetex}
 \usepackage{ifluatex}
-\newtheorem{prop}{Proposition}
-\usepackage[hang]{caption}
-\usepackage{tabularx}
-\usepackage{subcaption}
-\usepackage[ruled,linesnumbered]{algorithm2e}
 \newif\ifxetexorluatex % a new conditional starts as false
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi>0
    \xetexorluatextrue
@@ -21,12 +12,15 @@
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage[lighttt]{lmodern}
+  \ttfamily\DeclareFontShape{T1}{lmtt}{m}{it}{<->sub*lmtt/m/sl}{}
 \fi
 
 \usepackage[english,magyar]{babel} % Alapértelmezés szerint utoljára definiált nyelv lesz aktív, de később külön beállítjuk az aktív nyelvet.
 
+\usepackage{emptypage} % omit page number on empty pages
+
 %\usepackage{cmap}
-\usepackage{amsfonts,amsmath, wasysym, amssymb, stmaryrd} % Mathematical symbols.
+\usepackage{amsfonts,amsmath,amssymb} % Mathematical symbols.
 %\usepackage[ruled,boxed,resetcount,linesnumbered]{algorithm2e} % For pseudocodes. % beware: this is not compatible with LuaLaTeX, see http://tex.stackexchange.com/questions/34814/lualatex-and-algorithm2e
 \usepackage{booktabs} % For publication quality tables for LaTeX
 \usepackage{graphicx}
@@ -34,7 +28,7 @@
 %\usepackage{fancyhdr}
 %\usepackage{lastpage}
 
-\usepackage{anysize}
+\usepackage{geometry}
 %\usepackage{sectsty}
 \usepackage{setspace} % For setting line spacing
 
@@ -44,7 +38,7 @@
 
 \usepackage[amsmath,thmmarks]{ntheorem} % Theorem-like environments.
 
-
+\usepackage[hang]{caption}
 
 \singlespacing
 
